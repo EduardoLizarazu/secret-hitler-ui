@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Votacion</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Votación</h1>
+        <div class="buttons">
+            <button id="naziButton" data-vote="false" onclick="toggleBorder('naziButton')">Nazi</button>
+            <button id="alliesButton" data-vote="true" onclick="toggleBorder('alliesButton')">Allies</button>
+        </div>
+        <button id="submitButton" onclick="submitVote()">Enviar</button>
+        <hr>
+        <button id="startVotingButton" class="" onclick="startVoting()">Comenzar Votación</button>
+        <button id="resetButton" class="" onclick="resetVotes()">Reset</button>
+        <button id="showResultsButton" class="" onclick="showResults()">Obtener Votos</button>
+        <p class="" >Nazi: <span id="getNaziVote">0</span></p>
+        <p class="">Allies: <span id="getAlliesVote">0</span></p>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
