@@ -1,11 +1,11 @@
-// const code = prompt('Ingresa el codigo');
+const code = prompt('Ingresa el codigo');
 
-// if (code === '1234') {
-//     allHidden =document.querySelectorAll('.hidden');
-//     allHidden.forEach(element => {
-//         element.classList.remove('hidden');
-//     });
-// }
+if (code === '1234') {
+    allHidden =document.querySelectorAll('.hidden');
+    allHidden.forEach(element => {
+        element.classList.remove('hidden');
+    });
+}
 
 // Realizar una solicitud POST a la API
 const API = {
