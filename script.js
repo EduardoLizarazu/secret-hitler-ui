@@ -3,7 +3,7 @@ const API = {
     development: 'http://127.0.0.1:8000/votes',
     production: 'https://secret-hitler-87c101201aa1.herokuapp.com/votes'
 };
-const URL = API.development;
+const URL = API.production;
 
 const code = prompt('Ingresa el codigo');
 
