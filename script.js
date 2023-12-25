@@ -1,3 +1,10 @@
+// Realizar una solicitud POST a la API
+const API = {
+    development: 'http://127.0.0.1:8000/votes',
+    production: 'https://secret-hitler-87c101201aa1.herokuapp.com/votes'
+};
+const URL = API.development;
+
 const code = prompt('Ingresa el codigo');
 
 if (code === '1234') {
@@ -5,14 +12,51 @@ if (code === '1234') {
     allHidden.forEach(element => {
         element.classList.remove('hidden');
     });
+    fetch(`${URL}/start`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({allowed : false})
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+    });
 }
 
-// Realizar una solicitud POST a la API
-const API = {
-    development: 'http://127.0.0.1:8000/votes',
-    production: 'https://secret-hitler-87c101201aa1.herokuapp.com/votes'
-};
-const URL = API.production;
+function generarHashAleatorio() {
+    
+    // Generar un hash aleatorio
+    const hash = Math.random().toString(36).substring(2);
+
+    // Guardar el hash en el localStorage
+    localStorage.setItem('miHash', hash);
+
+    // Devolver el hash generado
+    return hash;
+}
+
+function obtenerHashDesdeLocalStorage() {
+    // Obtener el hash del localStorage
+    const hashGuardado = localStorage.getItem('miHash');
+
+    // Verificar si el hash existe
+    if (hashGuardado) {
+        console.log('Hash obtenido del localStorage:', hashGuardado);
+        return hashGuardado;
+    } else {
+        console.log('No se encontró ningún hash en el localStorage.');
+        return null;
+    }
+}
+
+if (!obtenerHashDesdeLocalStorage()) {
+    // Llamar a la función y mostrar el resultado en la consola
+    const hashGenerado = generarHashAleatorio();
+    console.log('Hash generado y guardado:', hashGenerado);
+}
+
+///--------------------------------------------------------------
+
 
 function toggleBorder(buttonId) {
     // Obtener el botón que se hizo clic
@@ -53,7 +97,11 @@ function submitVote() {
         activeButton.classList.remove('active');
 
         // Enviar la solicitud UPDATE a la API
-        const vote = { vote: activeButton.getAttribute('data-vote') };
+        const vote = { 
+            user : obtenerHashDesdeLocalStorage(), 
+            vote: activeButton.getAttribute('data-vote') 
+        };
+
         fetch(URL, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -61,7 +109,8 @@ function submitVote() {
         })
         .then(response => response.json())
         .then(data => {
-            data.voted ? alert('Voto enviado a ' + data.voted) : alert('Voto no enviado');
+            !data ? alert('Voto enviado') : alert('Voto no enviado');
+            console.log(data);
         })
         .catch(error => console.error(error));
 
@@ -74,21 +123,20 @@ function submitVote() {
 
 }
 
-
-
 function showResults() { 
     fetch(`${URL}/results`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     })
-        .then(response => response.json())
-        .then(data => {
-            const naziScore = document.getElementById('getNaziVote');
-            const alliesScore = document.getElementById('getAlliesVote');
-            naziScore.innerHTML = data.votes.nazi;
-            alliesScore.innerHTML = data.votes.allies;
-            console.log(data);
-        });
+    .then(response => response.json())
+    .then(data => {
+        const naziScore = document.getElementById('getNaziVote');
+        const alliesScore = document.getElementById('getAlliesVote');
+        
+        naziScore.innerHTML = data.nazi;
+        alliesScore.innerHTML = data.allies;
+        console.log(data);
+    });
     
 }
 
@@ -99,9 +147,9 @@ function resetVotes() {
         headers: { 'Content-Type': 'application/json' }
     });
     const naziScore = document.getElementById('getNaziVote');
-            const alliesScore = document.getElementById('getAlliesVote');
-            naziScore.innerHTML = '0';
-            alliesScore.innerHTML = '0';
+    const alliesScore = document.getElementById('getAlliesVote');
+    naziScore.innerHTML = '0';
+    alliesScore.innerHTML = '0';
     
     const startVotingBtn = document.getElementById('startVotingButton');
     startVotingBtn.classList.remove('allowed');
